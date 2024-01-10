@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model, decorators
 from django.utils.translation import gettext_lazy as _
-
+from .models import Wallet
 # from accou.users.forms import UserAdminChangeForm, UserAdminCreationForm
 
 User = get_user_model()
@@ -47,3 +47,9 @@ class UserAdmin(auth_admin.UserAdmin):
             },
         ),
     )
+
+
+@admin.register(Wallet)
+class WalletAdmin(admin.ModelAdmin):
+    list_display = ('user', 'balance', 'wallet_id')
+    list_display_links = ('user', 'balance', 'wallet_id')

@@ -1,7 +1,9 @@
 import uuid
+import random
+import string
 
 from django.conf import settings
-
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission
@@ -10,8 +12,13 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.db import models
+from helpers.common.basemodel import BaseModel
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
+def ref_code():
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=9))
 
 
 class UserManager(BaseUserManager):
@@ -82,7 +89,7 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
-    
+
     account_type = CharField(
         verbose_name=_("Account Type"),
         choices=ACCOUNT_TYPE,
@@ -100,8 +107,6 @@ class User(AbstractUser):
         verbose_name=_("Email Address"),
         help_text=_("The email address of the customer.")
     )
-    
-    
 
     username = models.CharField(
         verbose_name=_("user name"),
@@ -239,16 +244,49 @@ class User(AbstractUser):
         verbose_name = _("Register User")
         verbose_name_plural = _("Register Users")
 
-
+    # cretaing wallet id
     def __str__(self):
         return self.email 
+    
+@receiver(post_save, sender=User)
+def create_wallet(sender, instance, created, **kwargs):
+    if created:
+        wallet_id = ref_code()
+        Wallet.objects.create(wallet_id=wallet_id, user=instance)
+            
+post_save.connect(create_wallet, sender=User)
+    
+    
 
 
-    def get_absolute_url(self):
-        """Get url for user's detail view.
+class Wallet(BaseModel):
+    
+    user = models.ForeignKey(
+        'User',
+        verbose_name=_("User Profile"),
+        on_delete=models.CASCADE,
+        help_text=_("The user for whom address belongs to")
+    )
 
-        Returns:
-            str: URL for user detail.
+    # wallet Balance and Wallet ID 
+    balance = models.DecimalField(
+        verbose_name=_("Available Balance"),
+        null =True, blank=True, default=0.00,
+        max_digits = 300, decimal_places = 2,
+        help_text=_("The customers available Balance for the account")
+    )
 
-        """
-        return reverse("users:detail", kwargs={"username": self.pk})
+    wallet_id = models.CharField(
+        verbose_name=_("Geniotest Wallet ID"),
+        unique=True, null=True, blank=True,
+        max_length=20,
+        help_text=_("User Geniotest wallet id is unique to every user, the wallet id contains information about the customer")
+    )
+
+    class Meta:
+        ordering = ('-created_date',)
+        verbose_name = _("User Wallet")
+        verbose_name_plural = _("User Wallet")
+
+
+    

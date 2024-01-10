@@ -107,7 +107,7 @@ class SignupSerializer(serializers.ModelSerializer[UserType]):
         cleaned_data = self.get_cleaned_data()
         print(cleaned_data)
         # creating Geniopay account
-        genioRegister(body_data = cleaned_data)
+        # genioRegister(body_data = cleaned_data)
         user = User(**cleaned_data)
         user.set_password(cleaned_data["password"])
         # user.country_of_residence = country_of_residence
