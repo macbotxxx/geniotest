@@ -6,7 +6,6 @@ from rest_framework.permissions import AllowAny
 
 from account.models import User
 from .serializers import SignupSerializer , TestEmailSerializer
-from account.tasks import send_email_func
 
 
 
@@ -22,6 +21,7 @@ class UserCreationView(
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        print(**kwargs)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -30,19 +30,4 @@ class UserCreationView(
         serializer.save()
 
 
-class EmailView(
-    CreateModelMixin,
-    GenericViewSet):
-
-    permission_classes = [AllowAny,]
-    queryset = User.objects.all()
-    serializer_class = TestEmailSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        send_email_func.delay()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    
 

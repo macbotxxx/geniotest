@@ -28,7 +28,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="WEY Backend API",
+      title="Geniotest Backend API",
       default_version='v1',
       description="this is the description sections",
       terms_of_service="https://www.google.com/policies/terms/",

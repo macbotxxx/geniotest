@@ -58,11 +58,11 @@ class SignupSerializer(serializers.ModelSerializer[UserType]):
             }
             
 
-    def validate_email(self, value):
-        user_exist= User.objects.filter(email=value).exists()
-        if user_exist:
-            raise serializers.ValidationError("This email address used is already taken. Please login!")
-        return value
+    # def validate_email(self, value):
+    #     user_exist= User.objects.filter(email=value).exists()
+    #     if user_exist:
+    #         raise serializers.ValidationError("This email address used is already taken. Please login!")
+    #     return value
 
     def validate_email_verification(self,value):
         if not value:
@@ -102,18 +102,18 @@ class SignupSerializer(serializers.ModelSerializer[UserType]):
     
 
     def save(self, **kwargs):
-        # cleaned_data = self.get_cleaned_data()
-        # return super().save(**cleaned_data, **kwargs)
         cleaned_data = self.get_cleaned_data()
-        print(cleaned_data)
         # creating Geniopay account
-        # genioRegister(body_data = cleaned_data)
-        user = User(**cleaned_data)
-        user.set_password(cleaned_data["password"])
-        # user.country_of_residence = country_of_residence
-        # user.default_currency_id = country_of_residence.currency
-        user.save()
-        return user
+        res = genioRegister(body_data = cleaned_data)
+        if res[0] == 201:
+            print(res)
+            user = User(**cleaned_data)
+            user.set_password(cleaned_data["password"])
+           
+            user.save()
+            return user
+        raise serializers.ValidationError(res[1])
+        
     
 
 

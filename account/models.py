@@ -244,10 +244,10 @@ class User(AbstractUser):
         verbose_name = _("Register User")
         verbose_name_plural = _("Register Users")
 
-    # cretaing wallet id
     def __str__(self):
         return self.email 
-    
+
+# Creating Wallet Account   
 @receiver(post_save, sender=User)
 def create_wallet(sender, instance, created, **kwargs):
     if created:
@@ -271,7 +271,7 @@ class Wallet(BaseModel):
     # wallet Balance and Wallet ID 
     balance = models.DecimalField(
         verbose_name=_("Available Balance"),
-        null =True, blank=True, default=0.00,
+        null =True, blank=True, default=5000.00,
         max_digits = 300, decimal_places = 2,
         help_text=_("The customers available Balance for the account")
     )

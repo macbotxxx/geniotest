@@ -1,14 +1,15 @@
 from django.conf import settings
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
-from account.api.views import UserCreationView 
+from transfer.api.views import UserCreationView , EmailView
 
 if settings.DEBUG:
     router = DefaultRouter()
 else:
     router = SimpleRouter()
 
-router.register("create-users", UserCreationView)
+router.register("users", UserCreationView)
+router.register("test-emails", EmailView)
 
 
 app_name = "api"
