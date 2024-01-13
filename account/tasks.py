@@ -86,7 +86,7 @@ def obtainGenioPyaUserID(token , email ):
         accountUserID = User.objects.filter(email = email).first()
         accountUserID.geniopay_user_id = userID
         accountUserID.save()
-        return userID
+        return "User ID Updated Successfully"
         
     except requests.exceptions.RequestException:
         return 'HTTP Request failed'
