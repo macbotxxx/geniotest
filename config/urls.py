@@ -30,7 +30,7 @@ schema_view = get_schema_view(
    openapi.Info(
       title="Geniotest Backend API",
       default_version='v1',
-      description="this is the description sections",
+      description="Geniotest is an innovative peer-to-peer (P2P) money transfer system designed to facilitate seamless financial transactions among friends and family members. Developed by Michael Assanama, Geniotest leverages modern technologies to create a secure, efficient, and user-friendly platform for sending and receiving money.",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="contact@snippets.local"),
       license=openapi.License(name="BSD License"),

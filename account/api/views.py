@@ -71,6 +71,12 @@ class EmailVerificationView(
     queryset = User.objects.all()
     serializer_class = EmailVerifySerilaizer
     
+
+    @swagger_auto_schema(
+        tags=['User Profile'],  # Add your desired tag(s) here
+        operation_summary="User Email Verification",
+        operation_description="This endpoint verifies the user email account which the linked will be send from geniopay system",
+    )
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
