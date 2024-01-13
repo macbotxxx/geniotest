@@ -9,20 +9,27 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import environ
+import os
 
 from pathlib import Path
 from .apps import *
 from datetime import timedelta
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+env = environ.Env()
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$yupq318hr61y1jg)xtt6$*_td^+&-+xsg(8@k!&5#9m97*9xd'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -246,7 +253,9 @@ REST_FRAMEWORK = {
    
 }
 
+# Geniopay Settings
+GENIOPAY_BASE_URL = env('GENIOPAY_BASE_URL')
+GENIOPAY_SECRET_KEY = env('GENIOPAY_SECRET_KEY')
+GENIOPAY_CLIENT_KEY = env('GENIOPAY_CLIENT_KEY')
 
-GENIOPAY_BASE_URL = "https://api.geniopay.com"
-GENIOPAY_SECRET_KEY = "5hKiyLHGNxSv3O7rTyACBj9PH27GkzQ8HfabOWSq0vu48vxtqTMhdwPkY7VJkGEB"
-GENIOPAY_CLIENT_KEY = "kuSFproV.M3d5lv19gSbD3za6LhDSt2UE1tn5Rz3S"
+
