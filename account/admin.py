@@ -21,6 +21,8 @@ class UserAdmin(auth_admin.UserAdmin):
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         (_("Personal info"), {"fields": ('account_type','first_name', 'last_name', 'mobile', 'date_of_birth', 'kyc_complete', 'kyc_complete_date', 'kyc_status', 'kyc_submitted', 'place_of_birth', 'country', 'job_title', 'default_currency_id', 'accept_terms', 'agreed_to_data_usage', 'time_zone', 'language',)}),
+        (_("GenioPay Account Details"), {"fields": ('geniopay_user_id', 'geniopay_key',)}),
+
         (
             _("Permissions"),
             {

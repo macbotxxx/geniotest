@@ -247,6 +247,6 @@ REST_FRAMEWORK = {
 }
 
 
-GENIOPAY_BASE_URL = "https://developers.geniopay.com"
+GENIOPAY_BASE_URL = "https://api.geniopay.com"
 GENIOPAY_SECRET_KEY = "5hKiyLHGNxSv3O7rTyACBj9PH27GkzQ8HfabOWSq0vu48vxtqTMhdwPkY7VJkGEB"
-GENIOPAY_CLIENT_KEY = "dzkZEX2l.7dWYArpQSiZKkrBSCBg6uGabQFhvaC9w"
+GENIOPAY_CLIENT_KEY = "kuSFproV.M3d5lv19gSbD3za6LhDSt2UE1tn5Rz3S"

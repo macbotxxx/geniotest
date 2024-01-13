@@ -223,6 +223,13 @@ class User(AbstractUser):
         help_text = _("Consent to us using the provided data, including consent for us to verify the identity of relevant individuals with our service providers and database owners in accordance with the Identity Verification Terms.")
     )
 
+    email_verification = models.BooleanField(
+        verbose_name=_("Email Verification"),
+        blank=True, null=True,
+        default = False,
+        help_text = _("this indicates if the email is been verified by the user using geniopay endpoint")
+    )
+
     time_zone = models.CharField(
         max_length=100,
         verbose_name=_("Time Zone"),
@@ -237,6 +244,20 @@ class User(AbstractUser):
         blank=True, null=True,
         default='en',
         help_text=_("Customers language preference. All website communications will be sent out based on the users preferred language. ISO 639-1 code. Used as the language for notification emails sent by us. Defaults to the country code of the address or")
+    )
+
+    # GenioPay Account Details 
+    geniopay_user_id = models.UUIDField(
+        verbose_name=_("GenioPay User ID"),
+        default = uuid.uuid4,
+        help_text=_("GenioPay user ID is the unique identifier of the instance this object belongs to. Mandatory, unless a new instance to create is given.")
+    )
+
+    geniopay_key = models.CharField(
+        max_length=100,
+        verbose_name=_("GenioPay Auth Token"),
+        blank=True, null=True,
+        help_text=_("this stores the users auth key")
     )
 
 

@@ -20,6 +20,20 @@ body = {
   "password": "M_Mise83839ws"
 }
 
+# body = {
+#   "first_name": "Peter",
+#   "last_name": "John",
+#   "email": "meperid502@pursip.com",
+#   "password": "M080341i",
+#   "account_type": "PERSONAL",
+#   "country": "NG",
+#   "time_zone": "Europe/London",
+#   "language": "en",
+#   "mobile": "+2347067679537",
+#   "accept_terms": true,
+#   "agreed_to_data_usage": true
+# }
+
 path = "/v1/auth/login"
 method = "POST"
 

@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from account.models import User as UserType
-from helpers.geniopay.register import genioRegister
 
 
 
@@ -18,6 +17,10 @@ class UserSerializer(serializers.ModelSerializer[UserType]):
         extra_kwargs = {
             "url": {"view_name": "api:user-detail", "lookup_field": "pk"},
         }
+
+
+class EmailVerifySerilaizer(serializers.Serializer):
+    key = serializers.CharField()
 
 
 class SignupSerializer(serializers.ModelSerializer[UserType]):
@@ -104,15 +107,17 @@ class SignupSerializer(serializers.ModelSerializer[UserType]):
     def save(self, **kwargs):
         cleaned_data = self.get_cleaned_data()
         # creating Geniopay account
-        res = genioRegister(body_data = cleaned_data)
-        if res[0] == 201:
-            print(res)
-            user = User(**cleaned_data)
-            user.set_password(cleaned_data["password"])
-           
-            user.save()
-            return user
-        raise serializers.ValidationError(res[1])
+        # res = genioRegister(body_data = cleaned_data)
+        # if res[0] == 201:
+        #     user = User(**cleaned_data)
+        #     user.set_password(cleaned_data["password"])
+        #     user.save()
+        #     return user
+        # raise serializers.ValidationError(res[1])
+        user = User(**cleaned_data)
+        user.set_password(cleaned_data["password"])
+        user.save()
+        return user
         
     
 
