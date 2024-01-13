@@ -51,17 +51,16 @@ class EmailVerificationView(
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        res = obtainGenioPyaUserID.delay(token = "30bc361193db5caadcfbb737a79a0dd35e73bb2d", email ="xaporaj208@pursip.com")
-        # res = verifyEmail( body_data = serializer.data )
-        # if res['status_code'] == 201:
-        #     # updating the user account on geniopay email verification
-        #     accountVerify = User.objects.filter(email = serializer.data.get("email")).first()
-        #     accountVerify.email_verification = True
-        #     accountVerify.save()
-        #     return Response(res , status=status.HTTP_201_CREATED)
-        print(res)
+
+        res = verifyEmail( body_data = serializer.data )
+        if res['status_code'] == 201:
+            # updating the user account on geniopay email verification
+            accountVerify = User.objects.filter(email = serializer.data.get("email")).first()
+            accountVerify.email_verification = True
+            accountVerify.save()
+            return Response(res , status=status.HTTP_201_CREATED)
         
-        return Response( status=status.HTTP_400_BAD_REQUEST)
+        return Response( res ,status=status.HTTP_400_BAD_REQUEST)
         
 
 

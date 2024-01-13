@@ -16,6 +16,10 @@ from helpers.common.basemodel import BaseModel
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
+NULL_AND_BLANK = {'null': True, 'blank': True}
+
+
 # Create your models here.
 def ref_code():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=9))
@@ -102,7 +106,7 @@ class User(AbstractUser):
 
     email = models.EmailField(
         max_length=150,
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         unique=True,
         verbose_name=_("Email Address"),
         help_text=_("The email address of the customer.")
@@ -111,24 +115,21 @@ class User(AbstractUser):
     username = models.CharField(
         verbose_name=_("user name"),
         max_length=50,
-        blank=True,
-        null=True,
+        **NULL_AND_BLANK,
         help_text=_("The user name of the customer.")
     )
 
     first_name = models.CharField(
         verbose_name=_("First names"),
         max_length=50,
-        blank=True,
-        null=True,
+        **NULL_AND_BLANK,
         help_text=_("The first names of the customer.")
     )
 
     last_name = models.CharField(
         max_length=50,
         verbose_name=_("Last names"),
-        blank=True,
-        null=True,
+        **NULL_AND_BLANK,
         help_text=_("The last names of the customer.")
     )
 
@@ -136,15 +137,13 @@ class User(AbstractUser):
     mobile = models.CharField(
         max_length=15,
         verbose_name=_("Contact number"),
-        blank=True,
-        null=True,
+        **NULL_AND_BLANK,
         help_text=_("The contact number of the customer.")
     )
 
     date_of_birth = models.DateField(
         verbose_name=_("Date of birth"),
-        blank=True,
-        null=True,
+        **NULL_AND_BLANK,
         help_text=_("The date of birth of the customer.")
     )
 
@@ -156,8 +155,7 @@ class User(AbstractUser):
 
     kyc_complete_date = models.DateTimeField(
         verbose_name=_("KYC complete date"),
-        blank=True,
-        null=True,
+        **NULL_AND_BLANK,
         help_text=_("Timestamp when customer completed KYC verifiction process.")
     )
 
@@ -166,9 +164,8 @@ class User(AbstractUser):
         verbose_name=_("KYC status"),
         choices=KYC_STATUS,
         default='Unverified',
-        blank=True,
-        null=True,
-        help_text=_("The .")
+        **NULL_AND_BLANK,
+        help_text=_("The KYC status which indicates if the user has completes his or her kyc.")
     )
 
 
@@ -182,7 +179,7 @@ class User(AbstractUser):
     place_of_birth = models.CharField(
         max_length=250,
         verbose_name=_("Place of birth"),
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         help_text=_("The place fo birth of the customer. This must match the place of birth as indicated in the cusomters photo Identification.")
     )
 
@@ -190,42 +187,42 @@ class User(AbstractUser):
     country = models.CharField(
         max_length=2,
         verbose_name=_("Country of Residence"),
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         help_text=_("The country residence of the customer. KYC verification will be applied to this country and customer must provide proof of such residence as relevant in the country of jurisdiction.")
     )
 
     job_title = models.CharField(
         max_length=250,
         verbose_name=_("Job title"),
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         help_text=_("The Job title of the customer. ")
     )
 
     default_currency_id = models.CharField(
         max_length=3,
         verbose_name=_("Default Currency ID"),
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         default='EUR',
         help_text=_("The default currency of the borrower. Currency will be sent against borrowers country of residence.")
     )
 
     accept_terms = models.BooleanField(
         verbose_name=_("Accept Terms"),
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         default = False,
         help_text = _("Agreements collected from the user, such as acceptance of terms and conditions, or opt in for marketing")
     )
 
     agreed_to_data_usage = models.BooleanField(
         verbose_name=_("Agreed to Data Usage"),
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         default = False,
         help_text = _("Consent to us using the provided data, including consent for us to verify the identity of relevant individuals with our service providers and database owners in accordance with the Identity Verification Terms.")
     )
 
     email_verification = models.BooleanField(
         verbose_name=_("Email Verification"),
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         default = False,
         help_text = _("this indicates if the email is been verified by the user using geniopay endpoint")
     )
@@ -233,7 +230,7 @@ class User(AbstractUser):
     time_zone = models.CharField(
         max_length=100,
         verbose_name=_("Time Zone"),
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         default='Europe/London',
         help_text=_("The user Timezone is a client-specific Timezone that can be defined for the user time and user date of each individual user.")
     )
@@ -241,7 +238,7 @@ class User(AbstractUser):
     language = models.CharField(
         max_length=3,
         verbose_name=_("Language"),
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         default='en',
         help_text=_("Customers language preference. All website communications will be sent out based on the users preferred language. ISO 639-1 code. Used as the language for notification emails sent by us. Defaults to the country code of the address or")
     )
@@ -249,19 +246,43 @@ class User(AbstractUser):
     # GenioPay Account Details 
     geniopay_user_id = models.UUIDField(
         verbose_name=_("GenioPay User ID"),
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         help_text=_("GenioPay user ID is the unique identifier of the instance this object belongs to. Mandatory, unless a new instance to create is given.")
     )
 
     geniopay_key = models.CharField(
         max_length=100,
         verbose_name=_("GenioPay Auth Token"),
-        blank=True, null=True,
+        **NULL_AND_BLANK,
         help_text=_("this stores the users auth key")
+    )
+
+    created_date = models.DateTimeField(
+        default=timezone.now,
+        editable=False,
+        verbose_name=_('Created'),
+        help_text=_(
+            """Timestamp when the record was created. The date and time 
+            are displayed in the Timezone from where request is made. 
+            e.g. 2019-14-29T00:15:09Z for April 29, 2019 0:15:09 UTC"""
+        )
+    )
+
+    modified_date = models.DateTimeField(
+        auto_now=True,
+        editable=False,
+        verbose_name=_('Updated'),
+        **NULL_AND_BLANK,
+        help_text=_(
+            """Timestamp when the record was modified. The date and 
+            time are displayed in the Timezone from where request 
+            is made. e.g. 2019-14-29T00:15:09Z for April 29, 2019 0:15:09 UTC
+            """)
     )
 
 
     class Meta:
+        ordering = ["-created_date",]            
         verbose_name = _("Register User")
         verbose_name_plural = _("Register Users")
 

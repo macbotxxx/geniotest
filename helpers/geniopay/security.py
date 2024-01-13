@@ -9,37 +9,33 @@ def generate_custom_hmac(secret_key, body, path, method):
 
 
 
-
-
-
-
-secret_key = "cRcpzLRunm5WJt9mRnLySoPdoM2mjFlRcuSOFbB8xOo9kLxW1JQDrT98EjLBQGfh"
-
-body = {
-  "email": "latey42691@tanlanav.com",
-  "password": "M_Mise83839ws"
-}
+# secret_key = "cRcpzLRunm5WJt9mRnLySoPdoM2mjFlRcuSOFbB8xOo9kLxW1JQDrT98EjLBQGfh"
 
 # body = {
-#   "first_name": "Peter",
-#   "last_name": "John",
-#   "email": "meperid502@pursip.com",
-#   "password": "M080341i",
-#   "account_type": "PERSONAL",
-#   "country": "NG",
-#   "time_zone": "Europe/London",
-#   "language": "en",
-#   "mobile": "+2347067679537",
-#   "accept_terms": true,
-#   "agreed_to_data_usage": true
+#   "email": "latey42691@tanlanav.com",
+#   "password": "M_Mise83839ws"
 # }
 
-path = "/v1/auth/login"
-method = "POST"
+# # body = {
+# #   "first_name": "Peter",
+# #   "last_name": "John",
+# #   "email": "meperid502@pursip.com",
+# #   "password": "M080341i",
+# #   "account_type": "PERSONAL",
+# #   "country": "NG",
+# #   "time_zone": "Europe/London",
+# #   "language": "en",
+# #   "mobile": "+2347067679537",
+# #   "accept_terms": true,
+# #   "agreed_to_data_usage": true
+# # }
 
-generate_key = generate_custom_hmac(secret_key, body, path, method)
+# path = "/v1/auth/login"
+# method = "POST"
 
-print(generate_key)
+# generate_key = generate_custom_hmac(secret_key, body, path, method)
+
+# print(generate_key)
 
 
 

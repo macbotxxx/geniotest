@@ -16,7 +16,6 @@ INSTALLED_APPS = [
 
     # third apps 
     'account.apps.AccountConfig',
-    'locations.apps.LocationsConfig',
 ]
 
 MIDDLEWARE = [
