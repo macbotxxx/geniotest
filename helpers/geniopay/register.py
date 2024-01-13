@@ -43,25 +43,27 @@ def genioRegister( body_data , password ):
 
 def verifyEmail( body_data ):
         base_url = settings.GENIOPAY_BASE_URL
-        secret_key = settings.GENIOPAY_SECRET_KEY
         path = "/v1/profiles/verify-email-address"
-
         url = f"{base_url}{path}"
         method = "POST"
-        print(body_data)
 
-        payload = json.dumps({
-        "key": body_data.get("key")
-        })
+        try:
+                response = requests.post(
+                url=url,
+                headers={
+                        "X-Auth-Client": settings.GENIOPAY_CLIENT_KEY,
+                        "Content-Type": "application/json; charset=utf-8",
+                },
+                data=json.dumps({
+                        "key": body_data.get("key")
+                })
+                )
 
-        headers = {
-        "X-Auth-Client": settings.GENIOPAY_CLIENT_KEY,
-        "X-HMAC-Signature": generate_custom_hmac(secret_key, body_data, path, method)
-        }
-
-        response = requests.request(method, url, json=payload, headers=headers)
-
-        return response.text
+                return response.json()
+        
+        except requests.exceptions.RequestException:
+                print('HTTP Request failed')
+                return response.json()
 
 
 

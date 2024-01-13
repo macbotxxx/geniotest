@@ -210,7 +210,7 @@ class User(AbstractUser):
     )
 
     accept_terms = models.BooleanField(
-        verbose_name=_("Default Currency ID"),
+        verbose_name=_("Accept Terms"),
         blank=True, null=True,
         default = False,
         help_text = _("Agreements collected from the user, such as acceptance of terms and conditions, or opt in for marketing")
@@ -249,7 +249,7 @@ class User(AbstractUser):
     # GenioPay Account Details 
     geniopay_user_id = models.UUIDField(
         verbose_name=_("GenioPay User ID"),
-        default = uuid.uuid4,
+        blank=True, null=True,
         help_text=_("GenioPay user ID is the unique identifier of the instance this object belongs to. Mandatory, unless a new instance to create is given.")
     )
 
@@ -266,7 +266,7 @@ class User(AbstractUser):
         verbose_name_plural = _("Register Users")
 
     def __str__(self):
-        return self.email 
+        return self.email
 
 # Creating Wallet Account   
 @receiver(post_save, sender=User)

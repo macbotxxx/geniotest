@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer[UserType]):
 
 
 class EmailVerifySerilaizer(serializers.Serializer):
+    email = serializers.EmailField()
     key = serializers.CharField()
 
 

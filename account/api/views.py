@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny
 from account.models import User
 from .serializers import SignupSerializer , EmailVerifySerilaizer
 from helpers.geniopay.register import verifyEmail, genioRegister
-from account.tasks import obtainAuthToken
+from account.tasks import obtainAuthToken , obtainGenioPyaUserID
 
 
 
@@ -39,6 +39,7 @@ class UserCreationView(
         serializer.save()
 
 
+
 class EmailVerificationView(
     CreateModelMixin,
     GenericViewSet
@@ -50,8 +51,17 @@ class EmailVerificationView(
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        res = obtainGenioPyaUserID.delay(token = "30bc361193db5caadcfbb737a79a0dd35e73bb2d", email ="xaporaj208@pursip.com")
         # res = verifyEmail( body_data = serializer.data )
-        res = obtainAuthToken.delay()
-        return Response({'data':'working'}, status=status.HTTP_201_CREATED)
+        # if res['status_code'] == 201:
+        #     # updating the user account on geniopay email verification
+        #     accountVerify = User.objects.filter(email = serializer.data.get("email")).first()
+        #     accountVerify.email_verification = True
+        #     accountVerify.save()
+        #     return Response(res , status=status.HTTP_201_CREATED)
+        print(res)
+        
+        return Response( status=status.HTTP_400_BAD_REQUEST)
+        
 
 

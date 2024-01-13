@@ -4,14 +4,10 @@ from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model, decorators
 from django.utils.translation import gettext_lazy as _
 from .models import Wallet
-# from accou.users.forms import UserAdminChangeForm, UserAdminCreationForm
+
 
 User = get_user_model()
 
-# if settings.DJANGO_ADMIN_FORCE_ALLAUTH:
-#     # Force the `admin` sign in process to go through the `django-allauth` workflow:
-#     # https://django-allauth.readthedocs.io/en/stable/advanced.html#admin
-#     admin.site.login = decorators.login_required(admin.site.login)  # type: ignore[method-assign]
 
 
 @admin.register(User)
@@ -20,8 +16,15 @@ class UserAdmin(auth_admin.UserAdmin):
     # add_form = UserAdminCreationForm
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (_("Personal info"), {"fields": ('account_type','first_name', 'last_name', 'mobile', 'date_of_birth', 'kyc_complete', 'kyc_complete_date', 'kyc_status', 'kyc_submitted', 'place_of_birth', 'country', 'job_title', 'default_currency_id', 'accept_terms', 'agreed_to_data_usage', 'time_zone', 'language',)}),
-        (_("GenioPay Account Details"), {"fields": ('geniopay_user_id', 'geniopay_key',)}),
+        (_("Personal info"), {
+            "fields": ('account_type','first_name', 'last_name', 'mobile', 'date_of_birth', 'kyc_complete', 'kyc_complete_date', 'kyc_status', 'kyc_submitted', 'place_of_birth', 'country', 'job_title', 'default_currency_id','accept_terms', 'agreed_to_data_usage', 'time_zone', 'language',)}),
+
+        (_("GenioPay Account Details"), {
+            "fields": (
+                'geniopay_user_id', 
+                'geniopay_key',
+                'email_verification',
+                )}),
 
         (
             _("Permissions"),
