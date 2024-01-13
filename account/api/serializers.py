@@ -24,6 +24,21 @@ class EmailVerifySerilaizer(serializers.Serializer):
     key = serializers.CharField()
 
 
+class UserInfoSerilizer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = [
+            "groups", 
+            "user_permissions",
+            "date_joined",
+            "last_login",
+            "is_superuser",
+            "is_staff",
+            "is_active",
+            "password",
+            ]
+
+
 class SignupSerializer(serializers.ModelSerializer[UserType]):
     
     ACCOUNT_TYPE = (
@@ -62,11 +77,11 @@ class SignupSerializer(serializers.ModelSerializer[UserType]):
             }
             
 
-    # def validate_email(self, value):
-    #     user_exist= User.objects.filter(email=value).exists()
-    #     if user_exist:
-    #         raise serializers.ValidationError("This email address used is already taken. Please login!")
-    #     return value
+    def validate_email(self, value):
+        user_exist= User.objects.filter(email=value).exists()
+        if user_exist:
+            raise serializers.ValidationError("This email address used is already taken. Please login!")
+        return value
 
     def validate_email_verification(self,value):
         if not value:
@@ -107,21 +122,11 @@ class SignupSerializer(serializers.ModelSerializer[UserType]):
 
     def save(self, **kwargs):
         cleaned_data = self.get_cleaned_data()
-        # creating Geniopay account
-        # res = genioRegister(body_data = cleaned_data)
-        # if res[0] == 201:
-        #     user = User(**cleaned_data)
-        #     user.set_password(cleaned_data["password"])
-        #     user.save()
-        #     return user
-        # raise serializers.ValidationError(res[1])
         user = User(**cleaned_data)
         user.set_password(cleaned_data["password"])
         user.save()
         return user
         
-    
-
 
 class TestEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()

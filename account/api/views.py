@@ -2,10 +2,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.mixins import ListModelMixin , CreateModelMixin 
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.permissions import AllowAny
-
+from rest_framework.permissions import AllowAny , IsAuthenticated
+from drf_yasg.utils import swagger_auto_schema
 from account.models import User
-from .serializers import SignupSerializer , EmailVerifySerilaizer
+from .serializers import SignupSerializer , EmailVerifySerilaizer, UserInfoSerilizer
 from helpers.geniopay.register import verifyEmail, genioRegister
 from account.tasks import obtainAuthToken , obtainGenioPyaUserID
 
@@ -20,7 +20,11 @@ class UserCreationView(
     queryset = User.objects.all()
     serializer_class = SignupSerializer
     
-
+    @swagger_auto_schema(
+        tags=['User Profile'],  # Add your desired tag(s) here
+        operation_summary="Create User Profile",
+        operation_description="This endopint creates a new Customer profile.",
+    )
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -37,6 +41,25 @@ class UserCreationView(
 
     def perform_create(self, serializer):
         serializer.save()
+
+
+class UserInfoView(
+    ListModelMixin,
+    GenericViewSet
+    ):
+    permission_classes = [IsAuthenticated,]
+    queryset = User.objects.all()
+    serializer_class = UserInfoSerilizer
+    
+    @swagger_auto_schema(
+        tags=['User Profile'],  # Add your desired tag(s) here
+        operation_summary="Get User Info",
+        operation_description="This endpoint returns the details of an authenticated user",
+    )
+    def list(self, request, *args, **kwargs):
+        queryset = User.objects.filter( id = self.request.user.id ).first()
+        serializer = self.get_serializer(queryset)
+        return Response(serializer.data)
 
 
 
