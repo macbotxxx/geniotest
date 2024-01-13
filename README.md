@@ -1,7 +1,7 @@
-#Geniotest - P2P Money Transfer System
+## Geniotest - P2P Money Transfer System
 Geniotest is an innovative peer-to-peer (P2P) money transfer system designed to facilitate seamless financial transactions among friends and family members. Developed by Michael Assanama, Geniotest leverages modern technologies to create a secure, efficient, and user-friendly platform for sending and receiving money.
 
-#Key Features
+## Key Features
 1. Peer-to-Peer Transactions
 Geniotest simplifies the process of sending money directly between users, eliminating the need for intermediaries and providing a direct and personalized financial exchange experience.
 
@@ -20,13 +20,13 @@ Geniotest harnesses the power of Redis for efficient caching, enhancing overall 
 6. Asynchronous Task Handling with Celery
 To further enhance scalability and responsiveness, Geniotest utilizes Celery for asynchronous task handling. This enables the platform to efficiently manage background tasks, ensuring that users can perform various actions without experiencing delays.
 
-#Getting Started
+## Getting Started
 Before using Geniotest, ensure you have the required dependencies installed:
 
 Install Redis: Follow the instructions in the README to set up and run the Redis server.
 Install Celery: Use the provided command to install Celery.
 Run Geniotest: Follow the steps outlined in the README to start the Geniotest Django project and access the local development server.
-#About the Author
+## About the Author
 Geniotest is the brainchild of Michael Assanama, a visionary developer dedicated to creating solutions that simplify and enhance everyday experiences. Connect with Michael on GitHub and explore more about his projects and contributions.
 
 Geniotest aims to redefine P2P money transfers, providing a secure, efficient, and enjoyable way for users to send and receive money within their trusted circles.
