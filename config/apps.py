@@ -17,6 +17,7 @@ INSTALLED_APPS = [
 
     # third apps 
     'account.apps.AccountConfig',
+    'transfer.apps.TransferConfig',
 ]
 
 

@@ -57,5 +57,6 @@ urlpatterns = [
 # API URLS
 urlpatterns += [
     path('api/', include('account.api_router')),
+    path('api/', include('transfer.api_router')),
 
 ]

@@ -280,7 +280,6 @@ class User(AbstractUser):
             """)
     )
 
-
     class Meta:
         ordering = ["-created_date",]            
         verbose_name = _("Register User")
