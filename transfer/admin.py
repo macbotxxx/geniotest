@@ -35,6 +35,6 @@ class AccountDetailsAdmin(admin.ModelAdmin):
 
 @admin.register(BankAccount)
 class BankAccountAdmin(admin.ModelAdmin):
-    list_display = ('user', 'friendly_name', 'currency', 'status',)
-    list_display_links = ('user', 'friendly_name', 'currency', 'status',)
+    list_display = ('account_user', 'friendly_name', 'currency', 'status','created_date')
+    list_display_links = ('account_user', 'friendly_name', 'currency', 'status','created_date')
     

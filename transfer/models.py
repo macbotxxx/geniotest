@@ -354,9 +354,10 @@ class BankAccount(BaseModel):
         help_text=_("The unique identifier of an object.")
     )
 
-    user = models.EmailField(
+    user = models.UUIDField(
         verbose_name=_("User Account"),
         **NULL_AND_BLANK,
+        default= uuid.uuid4,
         help_text=_("TThe Profile ID of the User")
     )
 
@@ -506,6 +507,7 @@ class BankAccount(BaseModel):
             """)
     )
 
+    
     class Meta:
         ordering = ('-created_date',)
         verbose_name = _("Bank Account")

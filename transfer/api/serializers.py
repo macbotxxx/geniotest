@@ -34,7 +34,7 @@ class FundingAccountsSerilizer(serializers.ModelSerializer):
     bank_address = BankAddressSerilizer()
     class Meta:
         model = FundingAccounts
-        exclude = ('id', 'created_date', 'modified_date','supported_currencies')
+        fields = ('bank_name', 'bank_address', 'payment_type', 'identifier_type', 'identifier_value', 'account_number_type', 'account_number', 'funding_instructions')
 
     def create(self, validated_data):
         return super().create(validated_data)
@@ -44,7 +44,7 @@ class AccountDetailsSerilizer(serializers.ModelSerializer):
     funding_accounts = FundingAccountsSerilizer( many = True )
     class Meta:
         model = AccountDetails
-        exclude = ('id', 'created_date', 'modified_date')
+        fields = ('currency', 'country', 'payment_reference', 'funding_accounts')
 
     def create(self, validated_data):
         funding_accounts_data = validated_data.pop('funding_accounts', None)
@@ -58,6 +58,8 @@ class AccountDetailsSerilizer(serializers.ModelSerializer):
                         bank_address=bank_address_instance,
                         **funding_account_data
                     )
+
+                    account_details.funding_accounts.add(funding_account_instance)
 
         return account_details
 
@@ -77,6 +79,14 @@ class BankAccountSerilizer(WritableNestedModelSerializer):
 
     def create(self, validated_data):
         return super().create(validated_data)
+
+
+
+class VirtualAccountSerializer(serializers.Serializer):
+    friendly_name = serializers.CharField(max_length=20)
+    currency = serializers.CharField()
+    default = serializers.BooleanField()
+
     
 
 

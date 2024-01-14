@@ -13,6 +13,11 @@ from config import celery_app
 from celery import shared_task
 from celery.schedules import crontab
 
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from io import BytesIO
+from transfer.api.serializers import BankAccountSerilizer 
+
 User = get_user_model()
 
 
@@ -91,6 +96,45 @@ def obtainGenioPyaUserID(token , email ):
     except requests.exceptions.RequestException:
         return 'HTTP Request failed'
 
+
+
+@celery_app.task()
+def getVirtualAccountDetails(  auth_token , account_id , user ):
+    """
+    this will obtain the user details from geniopay account endpoint
+    and store the user id for 
+    accout creation and many more using the geniopay endpoint .
+    """
+    try:
+        base_url = settings.GENIOPAY_BASE_URL
+        path = f"/v1/accounts/{account_id}"
+
+        url = f"{base_url}{path}"
+        response = requests.get(
+            url=url,
+            headers={
+                "X-Auth-Client": settings.GENIOPAY_CLIENT_KEY,
+                "Content-Type": "application/json; charset=utf-8",
+                "Authorization": f"Token  {auth_token}",
+            },
+        )
+        
+        json_response = response.json()
+        json_string = JSONRenderer().render(json_response)
+        byte_stream = BytesIO(json_string)
+        data = JSONParser().parse(byte_stream)
+
+        serializer = BankAccountSerilizer(data=data)
+        if serializer.is_valid():
+            user_instance = User.objects.filter(id = user).first()
+            user_profile_instance = serializer.save( account_user = user_instance )
+            print(f"UserProfile instance created with ID: {user_profile_instance.id}")
+        else:
+            print(f"Validation errors: {serializer.errors}")
+        return "Usser Account is created"
+        
+    except requests.exceptions.RequestException:
+        return 'HTTP Request failed'
 
 
 
