@@ -1,3 +1,4 @@
+from decimal import Decimal
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.mixins import ListModelMixin , CreateModelMixin , RetrieveModelMixin
@@ -6,9 +7,14 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
 from account.models import User
-from .serializers import BankAccountSerilizer , VirtualAccountSerializer
+from .serializers import (
+    BankAccountSerilizer , VirtualAccountSerializer ,
+    SendFundsSerializer
+)
+
 from transfer.models import BankAccount
 from helpers.geniopay.wallet import createWallet
+from account.models import Wallet
 
 
 class BankAccountView(
@@ -59,4 +65,34 @@ class BankAccountView(
         else:
             serializer = BankAccountSerilizer(instance)
             return Response(serializer.data)
+
+
+
+class SendFundsView(
+    CreateModelMixin,
+    RetrieveModelMixin,
+    GenericViewSet
+    ):
+    permission_classes = [IsAuthenticated,]
+    queryset = BankAccount.objects.all()
+    serializer_class = SendFundsSerializer
+
+
+    @swagger_auto_schema(
+        tags=['Wallet Transfer'], 
+        operation_summary="Transfer Funds",
+        operation_description="This transfer funds to the another user wallet account",
+    )
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # reciever account 
+        receiver_account = Wallet.objects.filter( wallet_id__iexact = serializer.data.get("wallet_address").upper() ).first()
+        receiver_account.balance += Decimal(serializer.data.get("amount"))
+        receiver_account.save()
+        # sender account
+        sender_account = Wallet.objects.filter( user = self.request.user ).first()
+        sender_account.balance -= Decimal(serializer.data.get("amount"))
+        sender_account.save()
+        return Response({"details":"funds sent successfully"} , status=status.HTTP_201_CREATED)
         

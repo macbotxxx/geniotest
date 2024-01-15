@@ -99,7 +99,6 @@ class EmailVerificationView(
 
 class PinView(
     CreateModelMixin,
-    DestroyModelMixin,
     GenericViewSet
     ):
     permission_classes = [IsAuthenticated,]
@@ -108,7 +107,7 @@ class PinView(
     
 
     @swagger_auto_schema(
-        tags=['Wallet Pin'],  # Add your desired tag(s) here
+        tags=['Wallet Transfer'],  # Add your desired tag(s) here
         operation_summary="User Wallet Pin",
         operation_description="This create wallet pin",
     )

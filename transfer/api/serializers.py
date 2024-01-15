@@ -2,6 +2,7 @@ from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from  transfer.models import BankAccount , Balance , AccountType , BankAddress , FundingAccounts , AccountDetails
 from account.models import User , Wallet
+from helpers.common.hashkeys import wallet_encrypted_key
 
 
 
@@ -101,4 +102,38 @@ class WalletDetails(serializers.ModelSerializer):
     class Meta:
         model = Wallet
         exclude = ["balance",]
+
+
+class SendFundsSerializer(serializers.Serializer):
+    wallet_address = serializers.CharField()
+    amount = serializers.DecimalField(
+        max_digits = 300, decimal_places = 2,
+    )
+    pin = serializers.IntegerField()
+
+    def validate_wallet_address(self,value):
+        wallet_exist = Wallet.objects.filter( wallet_id__iexact = value.upper() ).first()
+        if not wallet_exist:
+            raise serializers.ValidationError("Wallet does not exist.")
+        
+        if wallet_exist.user == self.context['request'].user:
+            raise serializers.ValidationError("You cant fund yourself")
+        
+        return value
+
+    def validate_amount(self,value):
+        wallet_exist = Wallet.objects.filter( user = self.context['request'].user ).first()
+        if value > wallet_exist.balance:
+            raise serializers.ValidationError("Insufficient Balance")
+        return value
+    
+    def validate_pin(self, value):
+        pin_value = wallet_encrypted_key( pin = value )
+        print(pin_value)
+        user_account = User.objects.filter( id = self.context['request'].user.id ).first()
+        if pin_value != user_account.wallet_pin:
+            raise serializers.ValidationError("Incorrect Pin")
+        return value
+
+
 
