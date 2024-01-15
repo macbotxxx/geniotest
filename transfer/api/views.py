@@ -70,7 +70,6 @@ class BankAccountView(
 
 class SendFundsView(
     CreateModelMixin,
-    RetrieveModelMixin,
     GenericViewSet
     ):
     permission_classes = [IsAuthenticated,]
