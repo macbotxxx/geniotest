@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
 from  transfer.models import BankAccount , Balance , AccountType , BankAddress , FundingAccounts , AccountDetails
+from account.models import User , Wallet
+
 
 
 class BalanceSerilizer(serializers.ModelSerializer):
@@ -87,9 +89,16 @@ class VirtualAccountSerializer(serializers.Serializer):
     currency = serializers.CharField()
     default = serializers.BooleanField()
 
-    
+
+class UserDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fileds = ['email' , 'first_name', 'last_name',]
 
 
-class TransactionalPinSerlizer(serializers.Serializer):
-    pin = serializers.IntegerField()
+class WalletDetails(serializers.ModelSerializer):
+    user = UserDetailsSerializer()
+    class Meta:
+        model = Wallet
+        exclude = ["balance",]
 

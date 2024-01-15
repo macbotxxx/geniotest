@@ -131,5 +131,29 @@ class SignupSerializer(serializers.ModelSerializer[UserType]):
 class TestEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()
     message = serializers.CharField()
+
+
+
+class PinSerializer(serializers.Serializer):
+    pin = serializers.IntegerField()
+    pin2 = serializers.IntegerField()
+
+    def validate(self, data):
+        pin = str(data.get('pin'))
+        pin2 = str(data.get('pin2'))
+        if pin != pin2:
+            raise serializers.ValidationError("PINs do not match.")
+        
+        if len(pin) != 4:
+            raise serializers.ValidationError("PIN should not be more than 4 digits.")
+        
+        if len(pin2) != 4:
+            raise serializers.ValidationError("PIN2 should not be more than 4 digits.")
+        
+        return data
+
+    
+
+    
    
     

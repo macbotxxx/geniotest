@@ -1,13 +1,17 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.mixins import ListModelMixin , CreateModelMixin 
+from rest_framework.mixins import ListModelMixin , CreateModelMixin , DestroyModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import AllowAny , IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 from account.models import User
-from .serializers import SignupSerializer , EmailVerifySerilaizer, UserInfoSerilizer
+from .serializers import (
+    SignupSerializer , EmailVerifySerilaizer, 
+    UserInfoSerilizer , PinSerializer
+    )
 from helpers.geniopay.register import verifyEmail, genioRegister
 from account.tasks import obtainAuthToken , obtainGenioPyaUserID
+from helpers.common.hashkeys import wallet_encrypted_key
 
 
 
@@ -90,6 +94,36 @@ class EmailVerificationView(
             return Response(res , status=status.HTTP_201_CREATED)
         
         return Response( res ,status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class PinView(
+    CreateModelMixin,
+    DestroyModelMixin,
+    GenericViewSet
+    ):
+    permission_classes = [IsAuthenticated,]
+    queryset = User.objects.all()
+    serializer_class = PinSerializer
+    
+
+    @swagger_auto_schema(
+        tags=['Wallet Pin'],  # Add your desired tag(s) here
+        operation_summary="User Wallet Pin",
+        operation_description="This create wallet pin",
+    )
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        pin = serializer.data.get("pin")
+        if not self.request.user.wallet_pin:
+            wallet_pin = wallet_encrypted_key( pin = pin ) #Encrypt pin
+            user_account = User.objects.filter( id = self.request.user.id ).first()
+            user_account.wallet_pin = wallet_pin
+            user_account.save()
+            return Response( {"details":"wallet pin created successfully"} ,status=status.HTTP_201_CREATED)
+        
+        return Response( {"details":"wallet pin already created"} ,status=status.HTTP_400_BAD_REQUEST)
         
 
 

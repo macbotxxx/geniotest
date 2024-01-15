@@ -257,6 +257,15 @@ class User(AbstractUser):
         help_text=_("this stores the users auth key")
     )
 
+    # Wallet Pin
+    wallet_pin = models.CharField(
+        max_length=200,
+        verbose_name=_("Wallet Pin"),
+        **NULL_AND_BLANK,
+        editable=False,
+        help_text=_("this stores the users wallet pin")
+    )
+
     created_date = models.DateTimeField(
         default=timezone.now,
         editable=False,
