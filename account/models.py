@@ -296,6 +296,10 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+    @property
+    def verbose_name_placeholder(self):
+        return self.model._meta.verbose_name
 
 # Creating Wallet Account   
 @receiver(post_save, sender=User)
